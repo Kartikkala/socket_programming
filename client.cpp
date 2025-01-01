@@ -14,7 +14,7 @@ int main() {
         return EXIT_FAILURE;
     }
 
-    remove(clientPath);
+    // remove(clientPath);
     int cfd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (cfd == -1) {
         perror("Socket creation failed");
@@ -29,10 +29,10 @@ int main() {
     client_address.sun_family = AF_UNIX;
     server_address.sun_family = AF_UNIX;
 
-    strncpy(server_address.sun_path, path, sizeof(server_address.sun_path) - 1);
+    strncpy(&server_address.sun_path[1], path, sizeof(server_address.sun_path) - 1);
     server_address.sun_path[sizeof(server_address.sun_path) - 1] = '\0';
 
-    strncpy(client_address.sun_path, clientPath, sizeof(client_address.sun_path) - 1);
+    strncpy(&client_address.sun_path[1], clientPath, sizeof(client_address.sun_path) - 1);
     client_address.sun_path[sizeof(client_address.sun_path) - 1] = '\0';
 
     if (bind(cfd, (struct sockaddr*)&client_address, sizeof(client_address)) == -1) {

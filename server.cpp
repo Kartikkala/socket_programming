@@ -9,11 +9,6 @@
 int main() {
     const char socketPath[] = "/tmp/mysock";
     char *buf = new char[40];
-    if (remove(socketPath) == -1 && errno != ENOENT) {
-        perror("remove");
-        delete[] buf;
-        return EXIT_FAILURE;
-    }
 
     int sfd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (sfd == -1) {
@@ -25,7 +20,7 @@ int main() {
     struct sockaddr_un addr;
     memset(&addr, 0, sizeof(struct sockaddr_un));
     addr.sun_family = AF_UNIX;
-    strncpy(addr.sun_path, socketPath, sizeof(addr.sun_path) - 1);
+    strncpy(&addr.sun_path[1], socketPath, sizeof(addr.sun_path) - 1);
 
     if (bind(sfd, (struct sockaddr*)&addr, sizeof(struct sockaddr_un)) == -1) {
         perror("bind");
